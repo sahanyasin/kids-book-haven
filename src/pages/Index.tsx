@@ -1,11 +1,25 @@
+import { useState } from "react";
 import { books } from "@/data/books";
 import { BookCard } from "@/components/BookCard";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
+import { SearchInput } from "@/components/SearchInput";
 
 const Index = () => {
-  const sponsoredBooks = books.filter(book => book.sponsored);
-  const featuredBooks = books.filter(book => !book.sponsored).slice(0, 4);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const filteredBooks = books.filter(book => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      book.title.toLowerCase().includes(searchLower) ||
+      book.description.toLowerCase().includes(searchLower) ||
+      book.category.toLowerCase().includes(searchLower) ||
+      book.benefit.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const sponsoredBooks = filteredBooks.filter(book => book.sponsored);
+  const featuredBooks = filteredBooks.filter(book => !book.sponsored).slice(0, 4);
 
   return (
     <SidebarProvider>
@@ -13,6 +27,15 @@ const Index = () => {
         <BookSidebar />
         <div className="flex-1 container py-8">
           <h1 className="text-4xl font-bold mb-8 text-center">Children's Book Directory</h1>
+          
+          {/* Search Section */}
+          <div className="mb-8 max-w-xl mx-auto">
+            <SearchInput 
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search by title, category, or benefit..."
+            />
+          </div>
           
           {/* Sponsored Section */}
           <section className="mb-12">
