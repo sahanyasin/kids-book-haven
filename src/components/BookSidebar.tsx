@@ -12,7 +12,7 @@ import {
 import { benefits } from "@/data/books";
 import { Book, BookOpen, Brain, Heart, Smile, Star } from "lucide-react";
 
-const benefitIcons: { [key: string]: any } = {
+const benefitIcons = {
   "Emotional Intelligence": Heart,
   "Problem Solving": Brain,
   "Social Skills": Smile,
@@ -36,20 +36,19 @@ export function BookSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {benefits.map((benefit) => (
-                <SidebarMenuItem key={benefit}>
-                  <SidebarMenuButton asChild>
-                    <Link to={`/benefit/${benefit}`}>
-                      {benefitIcons[benefit] ? (
-                        <benefitIcons[benefit] />
-                      ) : (
-                        <Book />
-                      )}
-                      <span>{benefit}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {benefits.map((benefit) => {
+                const IconComponent = benefitIcons[benefit] || Book;
+                return (
+                  <SidebarMenuItem key={benefit}>
+                    <SidebarMenuButton asChild>
+                      <Link to={`/benefit/${benefit}`}>
+                        <IconComponent />
+                        <span>{benefit}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
