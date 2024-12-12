@@ -14,7 +14,7 @@ export function BookCard({ book }: { book: Book }) {
             </Badge>
           )}
           <img
-            src={`https://source.unsplash.com/${book.images[0]}`}
+            src={`https://images.unsplash.com/${book.images[0]}`}
             alt={book.title}
             className="w-full h-48 object-cover rounded-t-lg"
           />

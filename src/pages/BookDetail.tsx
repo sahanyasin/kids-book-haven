@@ -29,7 +29,7 @@ const BookDetail = () => {
                 {book.images.map((image, index) => (
                   <img
                     key={index}
-                    src={`https://source.unsplash.com/${image}`}
+                    src={`https://images.unsplash.com/${image}`}
                     alt={`${book.title} - Image ${index + 1}`}
                     className="w-full rounded-lg shadow-md"
                   />
@@ -66,6 +66,6 @@ const BookDetail = () => {
       </div>
     </SidebarProvider>
   );
-};
+}
 
 export default BookDetail;
