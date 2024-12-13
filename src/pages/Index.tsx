@@ -1,13 +1,36 @@
 import { useState } from "react";
-import { books } from "@/data/books";
 import { BookCard } from "@/components/BookCard";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
 import { SearchInput } from "@/components/SearchInput";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import type { Book } from "@/types/books";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
+  const { data: books = [], isLoading, error } = useQuery({
+    queryKey: ['books'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('books')
+        .select('*');
+      
+      if (error) throw error;
+      return data as Book[];
+    }
+  });
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    console.error('Error fetching books:', error);
+    return <div className="flex justify-center items-center min-h-screen">Error loading books</div>;
+  }
+
   const filteredBooks = books.filter(book => {
     const searchLower = searchQuery.toLowerCase();
     return (

@@ -9,7 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      books: {
+        Row: {
+          benefit: Database["public"]["Enums"]["book_benefit"]
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          images: string[]
+          price: number
+          sponsored: boolean | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          benefit: Database["public"]["Enums"]["book_benefit"]
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          images: string[]
+          price: number
+          sponsored?: boolean | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          benefit?: Database["public"]["Enums"]["book_benefit"]
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          images?: string[]
+          price?: number
+          sponsored?: boolean | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +56,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      book_benefit:
+        | "Emotional Intelligence"
+        | "Problem Solving"
+        | "Social Skills"
+        | "Character Building"
+        | "Language Development"
     }
     CompositeTypes: {
       [_ in never]: never
