@@ -5,6 +5,19 @@ import { BookSidebar } from "@/components/BookSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Book } from "@/types/books";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const LoadingSkeleton = () => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="space-y-4">
+        <Skeleton className="h-48 w-full rounded-lg" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+      </div>
+    ))}
+  </div>
+);
 
 const BenefitPage = () => {
   const { benefit } = useParams();
@@ -15,16 +28,15 @@ const BenefitPage = () => {
       const { data, error } = await supabase
         .from('books')
         .select('*')
-        .eq('benefit', benefit);
+        .eq('benefit', benefit)
+        .limit(12); // Limit initial load to improve performance
       
       if (error) throw error;
       return data as Book[];
-    }
+    },
+    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
   });
-
-  if (isLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
-  }
 
   if (error) {
     console.error('Error fetching books:', error);
@@ -37,11 +49,15 @@ const BenefitPage = () => {
         <BookSidebar />
         <div className="flex-1 container py-8">
           <h1 className="text-4xl font-bold mb-8">{benefit}</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {books.map(book => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
+          {isLoading ? (
+            <LoadingSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {books.map(book => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </SidebarProvider>
