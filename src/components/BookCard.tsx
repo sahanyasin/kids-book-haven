@@ -9,7 +9,7 @@ export function BookCard({ book }: { book: Book }) {
       <Card className={`h-full transition-all duration-300 hover:shadow-lg ${book.sponsored ? 'border-sponsored border-2' : ''}`}>
         <CardHeader className="relative">
           {book.sponsored && (
-            <Badge className="absolute top-2 right-2 bg-sponsored">
+            <Badge className="absolute top-4 right-4 bg-sponsored">
               Sponsored
             </Badge>
           )}
