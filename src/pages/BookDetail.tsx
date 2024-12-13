@@ -1,16 +1,35 @@
 import { useParams, Link } from "react-router-dom";
-import { books } from "@/data/books";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import type { Book } from "@/types/books";
 
 const BookDetail = () => {
   const { id } = useParams();
-  const book = books.find(b => b.id === Number(id));
 
-  if (!book) {
+  const { data: book, isLoading, error } = useQuery({
+    queryKey: ['book', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('books')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data as Book;
+    }
+  });
+
+  if (isLoading) {
+    return <div className="container py-8">Loading...</div>;
+  }
+
+  if (error || !book) {
     return <div className="container py-8">Book not found</div>;
   }
 
