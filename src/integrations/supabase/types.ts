@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      benefits: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: Database["public"]["Enums"]["book_benefit"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: Database["public"]["Enums"]["book_benefit"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: Database["public"]["Enums"]["book_benefit"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       books: {
         Row: {
           benefit: Database["public"]["Enums"]["book_benefit"]
