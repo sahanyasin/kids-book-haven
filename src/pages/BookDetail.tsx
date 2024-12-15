@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
@@ -78,14 +79,12 @@ const BookDetail = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-2xl font-bold">${book.price}</span>
                     {book.book_link && (
-                      <a 
-                        href={book.book_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
+                      <Button
+                        variant="default"
+                        onClick={() => window.open(book.book_link, '_blank', 'noopener,noreferrer')}
                       >
-                        View on Amazon
-                      </a>
+                        Buy on Amazon
+                      </Button>
                     )}
                   </div>
                 </CardContent>
