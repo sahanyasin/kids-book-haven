@@ -35,6 +35,7 @@ export type Database = {
       }
       books: {
         Row: {
+          author: string
           benefit: Database["public"]["Enums"]["book_benefit"]
           category: string
           created_at: string | null
@@ -47,6 +48,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          author: string
           benefit: Database["public"]["Enums"]["book_benefit"]
           category: string
           created_at?: string | null
@@ -59,6 +61,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          author?: string
           benefit?: Database["public"]["Enums"]["book_benefit"]
           category?: string
           created_at?: string | null

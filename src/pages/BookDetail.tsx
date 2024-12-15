@@ -58,7 +58,10 @@ const BookDetail = () => {
             
             <div>
               <div className="flex items-start justify-between mb-4">
-                <h1 className="text-4xl font-bold">{book.title}</h1>
+                <div>
+                  <h1 className="text-4xl font-bold">{book.title}</h1>
+                  <p className="text-gray-600 mt-2">By {book.author}</p>
+                </div>
                 {book.sponsored && (
                   <Badge className="bg-sponsored">Sponsored</Badge>
                 )}
