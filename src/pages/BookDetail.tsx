@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
@@ -78,7 +77,6 @@ const BookDetail = () => {
                 <CardContent className="pt-6">
                   <div className="flex justify-between items-center">
                     <span className="text-2xl font-bold">${book.price}</span>
-                    <Button size="lg">Add to Cart</Button>
                   </div>
                 </CardContent>
               </Card>
