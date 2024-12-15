@@ -10,4 +10,5 @@ export type Book = {
   created_at: string | null;
   updated_at: string | null;
   author: string;
+  book_link: string | null;
 }

@@ -77,6 +77,16 @@ const BookDetail = () => {
                 <CardContent className="pt-6">
                   <div className="flex justify-between items-center">
                     <span className="text-2xl font-bold">${book.price}</span>
+                    {book.book_link && (
+                      <a 
+                        href={book.book_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        View on Amazon
+                      </a>
+                    )}
                   </div>
                 </CardContent>
               </Card>
