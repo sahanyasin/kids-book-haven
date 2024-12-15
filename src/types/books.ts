@@ -9,4 +9,5 @@ export type Book = {
   images: string[];
   created_at: string | null;
   updated_at: string | null;
+  author: string;
 }
