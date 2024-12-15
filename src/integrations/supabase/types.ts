@@ -86,6 +86,7 @@ export type Database = {
         | "Social Skills"
         | "Character Building"
         | "Language Development"
+        | "test"
     }
     CompositeTypes: {
       [_ in never]: never
