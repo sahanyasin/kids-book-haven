@@ -47,10 +47,10 @@ const Sitemap = () => {
   </url>`).join('')}
 </urlset>`;
 
-    // Set the content type to XML
-    document.documentElement.innerHTML = xml;
-    document.documentElement.setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-    document.contentType = 'application/xml';
+    // Create a new document and set its content
+    document.open('text/xml');
+    document.write(xml);
+    document.close();
   }, [books]);
 
   return null;
