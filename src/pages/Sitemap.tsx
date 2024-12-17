@@ -47,9 +47,10 @@ const Sitemap = () => {
   </url>`).join('')}
 </urlset>`;
 
-    const blob = new Blob([xml], { type: 'application/xml' });
-    const url = URL.createObjectURL(blob);
-    window.location.href = url;
+    // Set the content type to XML
+    document.documentElement.innerHTML = xml;
+    document.documentElement.setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+    document.contentType = 'application/xml';
   }, [books]);
 
   return null;
