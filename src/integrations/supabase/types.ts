@@ -45,6 +45,7 @@ export type Database = {
           images: string[]
           price: number
           sponsored: boolean | null
+          status: string
           title: string
           updated_at: string | null
         }
@@ -59,6 +60,7 @@ export type Database = {
           images: string[]
           price: number
           sponsored?: boolean | null
+          status?: string
           title: string
           updated_at?: string | null
         }
@@ -73,6 +75,7 @@ export type Database = {
           images?: string[]
           price?: number
           sponsored?: boolean | null
+          status?: string
           title?: string
           updated_at?: string | null
         }
