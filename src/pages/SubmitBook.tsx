@@ -22,7 +22,6 @@ export default function SubmitBook() {
       category: "",
       benefit: "Emotional Intelligence",
       book_link: "",
-      images: [],
     },
   });
 
@@ -38,9 +37,9 @@ export default function SubmitBook() {
           category: data.category,
           benefit: data.benefit,
           book_link: data.book_link || null,
-          images: data.images,
+          images: ["placeholder.svg"], // Default placeholder image
           sponsored: false,
-          status: 'Draft' // Set initial status as Draft
+          status: 'Draft'
         });
 
       if (error) throw error;

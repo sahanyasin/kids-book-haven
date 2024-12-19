@@ -16,9 +16,6 @@ export const bookFormSchema = z.object({
     required_error: "Please select a benefit category",
   }),
   book_link: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  images: z.string().transform(str => str.split(',').map(s => s.trim())).pipe(
-    z.array(z.string()).min(1, "At least one image is required")
-  ),
 });
 
 export type BookFormValues = z.infer<typeof bookFormSchema>;
