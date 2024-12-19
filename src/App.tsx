@@ -9,24 +9,30 @@ import BookDetail from "./pages/BookDetail";
 import BenefitPage from "./pages/BenefitPage";
 import Sitemap from "./pages/Sitemap";
 import SubmitBook from "./pages/SubmitBook";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/category/:category" element={<CategoryPage />} />
-          <Route path="/benefit/:benefit" element={<BenefitPage />} />
-          <Route path="/book/:id" element={<BookDetail />} />
-          <Route path="/sitemap.xml" element={<Sitemap />} />
-          <Route path="/submit-book" element={<SubmitBook />} />
-        </Routes>
-      </BrowserRouter>
+      <div className="min-h-screen flex flex-col">
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/category/:category" element={<CategoryPage />} />
+              <Route path="/benefit/:benefit" element={<BenefitPage />} />
+              <Route path="/book/:id" element={<BookDetail />} />
+              <Route path="/sitemap.xml" element={<Sitemap />} />
+              <Route path="/submit-book" element={<SubmitBook />} />
+            </Routes>
+          </main>
+          <Footer />
+        </BrowserRouter>
+      </div>
     </TooltipProvider>
   </QueryClientProvider>
 );
