@@ -8,6 +8,7 @@ import CategoryPage from "./pages/CategoryPage";
 import BookDetail from "./pages/BookDetail";
 import BenefitPage from "./pages/BenefitPage";
 import Sitemap from "./pages/Sitemap";
+import SubmitBook from "./pages/SubmitBook";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/benefit/:benefit" element={<BenefitPage />} />
           <Route path="/book/:id" element={<BookDetail />} />
           <Route path="/sitemap.xml" element={<Sitemap />} />
+          <Route path="/submit-book" element={<SubmitBook />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
