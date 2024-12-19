@@ -117,26 +117,6 @@ export function BookFormFields({ form }: BookFormFieldsProps) {
           </FormItem>
         )}
       />
-
-      <FormField
-        control={form.control}
-        name="images"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Images (comma-separated URLs)</FormLabel>
-            <FormControl>
-              <Input 
-                placeholder="Enter image URLs"
-                onChange={(e) => {
-                  const urls = e.target.value.split(',').map(url => url.trim());
-                  field.onChange(urls);
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
     </>
   );
 }
