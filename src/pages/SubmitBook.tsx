@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   author: z.string().min(1, "Author is required"),
-  price: z.string().min(1, "Price is required").transform((val) => parseFloat(val)),
+  price: z.string().min(1, "Price is required"),
   category: z.string().min(1, "Category is required"),
   benefit: z.enum([
     "Emotional Intelligence",
@@ -25,7 +25,9 @@ const formSchema = z.object({
     required_error: "Please select a benefit category",
   }),
   book_link: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  images: z.array(z.string()).min(1, "At least one image is required"),
+  images: z.string().transform(str => str.split(',').map(s => s.trim())).pipe(
+    z.array(z.string()).min(1, "At least one image is required")
+  ),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -52,10 +54,17 @@ export default function SubmitBook() {
     try {
       const { error } = await supabase
         .from('books')
-        .insert([{
-          ...data,
+        .insert({
+          title: data.title,
+          description: data.description,
+          author: data.author,
+          price: parseFloat(data.price),
+          category: data.category,
+          benefit: data.benefit,
+          book_link: data.book_link || null,
+          images: data.images,
           sponsored: false,
-        }]);
+        });
 
       if (error) throw error;
 
@@ -71,6 +80,7 @@ export default function SubmitBook() {
         description: "There was a problem submitting your book. Please try again.",
         variant: "destructive",
       });
+      console.error('Error submitting book:', error);
     }
   };
 
