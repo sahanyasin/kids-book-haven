@@ -15,7 +15,8 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('*');
+        .select('*')
+        .neq('status', 'Draft'); // Filter out draft books
       
       if (error) throw error;
       return data as Book[];

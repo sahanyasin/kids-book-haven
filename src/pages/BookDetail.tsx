@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,9 +7,11 @@ import { BookSidebar } from "@/components/BookSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Book } from "@/types/books";
+import { useEffect } from "react";
 
 const BookDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data: book, isLoading, error } = useQuery({
     queryKey: ['book', id],
@@ -18,12 +20,20 @@ const BookDetail = () => {
         .from('books')
         .select('*')
         .eq('id', id)
+        .neq('status', 'Draft') // Filter out draft books
         .single();
       
       if (error) throw error;
       return data as Book;
     }
   });
+
+  // Redirect to home if book is not found or is a draft
+  useEffect(() => {
+    if (!isLoading && (!book || book.status === 'Draft')) {
+      navigate('/');
+    }
+  }, [book, isLoading, navigate]);
 
   if (isLoading) {
     return <div className="container py-8">Loading...</div>;
@@ -95,6 +105,6 @@ const BookDetail = () => {
       </div>
     </SidebarProvider>
   );
-}
+};
 
 export default BookDetail;

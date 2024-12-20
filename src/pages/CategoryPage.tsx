@@ -15,7 +15,8 @@ const CategoryPage = () => {
       const { data, error } = await supabase
         .from('books')
         .select('*')
-        .eq('category', category);
+        .eq('category', category)
+        .neq('status', 'Draft'); // Filter out draft books
       
       if (error) throw error;
       return data as Book[];

@@ -29,13 +29,14 @@ const BenefitPage = () => {
         .from('books')
         .select('*')
         .eq('benefit', benefit)
-        .limit(12); // Limit initial load to improve performance
+        .neq('status', 'Draft') // Filter out draft books
+        .limit(12);
       
       if (error) throw error;
       return data as Book[];
     },
-    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   if (error) {
