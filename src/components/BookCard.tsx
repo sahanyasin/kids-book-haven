@@ -4,6 +4,13 @@ import { Link } from "react-router-dom";
 import type { Book } from "@/types/books";
 
 export function BookCard({ book }: { book: Book }) {
+  const getImageUrl = (imageUrl: string) => {
+    // Handle both Supabase Storage and Unsplash URLs
+    return imageUrl.startsWith('http') 
+      ? imageUrl 
+      : `https://images.unsplash.com/${imageUrl}`;
+  };
+
   return (
     <Link to={`/book/${book.id}`}>
       <Card className={`h-full transition-all duration-300 hover:shadow-lg ${book.sponsored ? 'border-sponsored border-2' : ''}`}>
@@ -14,9 +21,13 @@ export function BookCard({ book }: { book: Book }) {
             </Badge>
           )}
           <img
-            src={`https://images.unsplash.com/${book.images[0]}`}
+            src={getImageUrl(book.images[0])}
             alt={book.title}
             className="w-full h-48 object-cover rounded-t-lg"
+            onError={(e) => {
+              const img = e.target as HTMLImageElement;
+              img.src = '/placeholder.svg';
+            }}
           />
         </CardHeader>
         <CardContent>
