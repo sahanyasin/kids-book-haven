@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import type { Book } from "@/types/books";
 
 export function BookCard({ book }: { book: Book }) {
-  const getImageUrl = (imageUrl: string) => {
+  const getImageUrl = (imageUrl: string | undefined) => {
+    if (!imageUrl) return '/placeholder.svg';
+    
     // Handle both Supabase Storage and Unsplash URLs
     return imageUrl.startsWith('http') 
       ? imageUrl 
@@ -21,7 +23,7 @@ export function BookCard({ book }: { book: Book }) {
             </Badge>
           )}
           <img
-            src={getImageUrl(book.images[0])}
+            src={getImageUrl(book.images?.[0])}
             alt={book.title}
             className="w-full h-48 object-cover rounded-t-lg"
             onError={(e) => {
