@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 import type { Book } from "@/types/books";
-import { useEffect } from "react";
 
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const { data: book, isLoading, error } = useQuery({
     queryKey: ['book', id],
@@ -20,7 +21,7 @@ const BookDetail = () => {
         .from('books')
         .select('*')
         .eq('id', id)
-        .neq('status', 'Draft') // Filter out draft books
+        .neq('status', 'Draft')
         .single();
       
       if (error) throw error;
@@ -28,12 +29,73 @@ const BookDetail = () => {
     }
   });
 
-  // Redirect to home if book is not found or is a draft
-  useEffect(() => {
-    if (!isLoading && (!book || book.status === 'Draft')) {
-      navigate('/');
+  const updateBookMutation = useMutation({
+    mutationFn: async (newImages: string[]) => {
+      const { error } = await supabase
+        .from('books')
+        .update({ images: newImages })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Book images updated successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update book images",
+        variant: "destructive",
+      });
+      console.error('Error updating book:', error);
     }
-  }, [book, isLoading, navigate]);
+  });
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      
+      const { error: uploadError, data } = await supabase.storage
+        .from('book-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      if (!data) throw new Error('No data returned from upload');
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('book-images')
+        .getPublicUrl(data.path);
+
+      const newImages = [...(book?.images || []), publicUrl];
+      await updateBookMutation.mutateAsync(newImages);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRemoveImage = async (imageUrl: string) => {
+    if (!book) return;
+    
+    try {
+      const newImages = book.images.filter(img => img !== imageUrl);
+      await updateBookMutation.mutateAsync(newImages);
+    } catch (error) {
+      console.error('Error removing image:', error);
+    }
+  };
 
   if (isLoading) {
     return <div className="container py-8">Loading...</div>;
@@ -54,15 +116,37 @@ const BookDetail = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
                 {book.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={`https://images.unsplash.com/${image}`}
-                    alt={`${book.title} - Image ${index + 1}`}
-                    className="w-full rounded-lg shadow-md"
-                  />
+                  <div key={index} className="relative group">
+                    <img
+                      src={image}
+                      alt={`${book.title} - Image ${index + 1}`}
+                      className="w-full rounded-lg shadow-md"
+                    />
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => handleRemoveImage(image)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
                 ))}
+              </div>
+              <div className="mb-6">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="block w-full text-sm text-slate-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-primary file:text-white
+                    hover:file:bg-primary/90"
+                />
               </div>
             </div>
             
