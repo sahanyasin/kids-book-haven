@@ -13,7 +13,9 @@ import Sitemap from "./pages/Sitemap";
 import SubmitBook from "./pages/SubmitBook";
 import UserManagement from "./pages/UserManagement";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
+import { UserProfile } from "./components/UserProfile";
 
 const queryClient = new QueryClient();
 
@@ -54,10 +56,12 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <UserProfile />
           <main className="flex-grow">
             <Routes>
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Index />} /> {/* Index route is now public */}
+              <Route path="/" element={<Index />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/category/:category" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
               <Route path="/benefit/:benefit" element={<ProtectedRoute><BenefitPage /></ProtectedRoute>} />
               <Route path="/book/:id" element={<ProtectedRoute><BookDetail /></ProtectedRoute>} />
