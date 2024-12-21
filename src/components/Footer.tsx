@@ -12,6 +12,9 @@ const Footer = () => {
             <Link to="/submit-book" className="text-sm text-gray-600 hover:text-gray-900">
               Submit a Book
             </Link>
+            <Link to="/login" className="text-sm text-gray-600 hover:text-gray-900">
+              Login
+            </Link>
             <Link to="/sitemap.xml" className="text-sm text-gray-600 hover:text-gray-900">
               Sitemap
             </Link>
