@@ -57,7 +57,7 @@ const App = () => (
           <main className="flex-grow">
             <Routes>
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/" element={<Index />} /> {/* Index route is now public */}
               <Route path="/category/:category" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
               <Route path="/benefit/:benefit" element={<ProtectedRoute><BenefitPage /></ProtectedRoute>} />
               <Route path="/book/:id" element={<ProtectedRoute><BookDetail /></ProtectedRoute>} />
