@@ -5,27 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { BookFormFields } from "@/components/BookFormFields";
 import { bookFormSchema, type BookFormValues } from "@/schemas/bookSchema";
 
 export default function SubmitBook() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Check authentication status
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate('/login');
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to submit a book.",
-          variant: "destructive",
-        });
-      }
-    });
-  }, [navigate, toast]);
 
   const form = useForm<BookFormValues>({
     resolver: zodResolver(bookFormSchema),
@@ -52,7 +37,7 @@ export default function SubmitBook() {
           category: data.category,
           benefit: data.benefit,
           book_link: data.book_link || null,
-          images: ["placeholder.svg"], // Default placeholder image
+          images: ["placeholder.svg"],
           sponsored: false,
           status: 'Draft'
         });
