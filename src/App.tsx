@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import Index from "./pages/Index";
 import CategoryPage from "./pages/CategoryPage";
 import BookDetail from "./pages/BookDetail";
@@ -17,9 +18,16 @@ import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
 import { UserProfile } from "./components/UserProfile";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-// Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
@@ -50,31 +58,36 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <div className="min-h-screen flex flex-col">
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <UserProfile />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Index />} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/category/:category" element={<CategoryPage />} />
-              <Route path="/benefit/:benefit" element={<BenefitPage />} />
-              <Route path="/book/:id" element={<BookDetail />} />
-              <Route path="/sitemap.xml" element={<Sitemap />} />
-              <Route path="/submit-book" element={<SubmitBook />} />
-              <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
-            </Routes>
-          </main>
-          <Footer />
-        </BrowserRouter>
-      </div>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <div className="min-h-screen flex flex-col" role="application">
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4">
+              Skip to main content
+            </a>
+            <UserProfile />
+            <main id="main-content" className="flex-grow" role="main">
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/category/:category" element={<CategoryPage />} />
+                <Route path="/benefit/:benefit" element={<BenefitPage />} />
+                <Route path="/book/:id" element={<BookDetail />} />
+                <Route path="/sitemap.xml" element={<Sitemap />} />
+                <Route path="/submit-book" element={<SubmitBook />} />
+                <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+              </Routes>
+            </main>
+            <Footer />
+          </BrowserRouter>
+        </div>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
