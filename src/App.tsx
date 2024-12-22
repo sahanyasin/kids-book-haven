@@ -62,8 +62,8 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Index />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/category/:category" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
-              <Route path="/benefit/:benefit" element={<ProtectedRoute><BenefitPage /></ProtectedRoute>} />
+              <Route path="/category/:category" element={<CategoryPage />} />
+              <Route path="/benefit/:benefit" element={<BenefitPage />} />
               <Route path="/book/:id" element={<BookDetail />} />
               <Route path="/sitemap.xml" element={<Sitemap />} />
               <Route path="/submit-book" element={<SubmitBook />} />
