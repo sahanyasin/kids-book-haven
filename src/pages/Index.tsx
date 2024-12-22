@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BookCard } from "@/components/BookCard";
+import { CategoryCard } from "@/components/CategoryCard";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
 import { SearchInput } from "@/components/SearchInput";
@@ -10,25 +11,38 @@ import type { Book } from "@/types/books";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
-  const { data: books = [], isLoading, error } = useQuery({
+  const { data: books = [], isLoading: booksLoading, error: booksError } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
         .select('*')
-        .neq('status', 'Draft'); // Filter out draft books
+        .neq('status', 'Draft');
       
       if (error) throw error;
       return data as Book[];
     }
   });
 
-  if (isLoading) {
+  const { data: featuredCategories = [], isLoading: categoriesLoading } = useQuery({
+    queryKey: ['featured-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('featured_categories')
+        .select('*')
+        .order('display_order');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  if (booksLoading || categoriesLoading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
-  if (error) {
-    console.error('Error fetching books:', error);
+  if (booksError) {
+    console.error('Error fetching books:', booksError);
     return <div className="flex justify-center items-center min-h-screen">Error loading books</div>;
   }
 
@@ -45,6 +59,11 @@ const Index = () => {
   const sponsoredBooks = filteredBooks.filter(book => book.sponsored);
   const featuredBooks = filteredBooks.filter(book => !book.sponsored).slice(0, 4);
 
+  // Get books count for each category
+  const getCategoryBookCount = (category: string) => {
+    return books.filter(book => book.category === category).length;
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -60,6 +79,22 @@ const Index = () => {
               placeholder="Search by title, category, or benefit..."
             />
           </div>
+
+          {/* Featured Categories Section */}
+          {featuredCategories.length > 0 && (
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold mb-4">Featured Categories</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredCategories.map(category => (
+                  <CategoryCard 
+                    key={category.id}
+                    category={category.category}
+                    count={getCategoryBookCount(category.category)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
           
           {/* Sponsored Section */}
           <section className="mb-12">
