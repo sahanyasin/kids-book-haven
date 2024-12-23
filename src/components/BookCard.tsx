@@ -39,6 +39,11 @@ export function BookCard({ book }: { book: Book }) {
         <CardContent>
           <h3 className="font-bold text-lg mb-2">{book.title}</h3>
           <p className="text-sm text-gray-600 mb-2">{book.description.substring(0, 100)}...</p>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {book.categories.map((category) => (
+              <Badge key={category.id} variant="outline">{category.name}</Badge>
+            ))}
+          </div>
           <div className="flex justify-between items-center">
             <Badge variant="secondary">{book.benefit}</Badge>
             <span className="font-bold text-primary" aria-label={`Price: $${book.price}`}>

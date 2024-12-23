@@ -48,6 +48,39 @@ export type Database = {
         }
         Relationships: []
       }
+      book_categories: {
+        Row: {
+          book_id: string
+          category_id: string
+          created_at: string | null
+        }
+        Insert: {
+          book_id: string
+          category_id: string
+          created_at?: string | null
+        }
+        Update: {
+          book_id?: string
+          category_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_categories_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           author: string
@@ -92,6 +125,27 @@ export type Database = {
           sponsored?: boolean | null
           status?: string
           title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
           updated_at?: string | null
         }
         Relationships: []

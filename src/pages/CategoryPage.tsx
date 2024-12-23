@@ -15,12 +15,35 @@ const CategoryPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('*')
-        .eq('category', category)
+        .select(`
+          id,
+          title,
+          description,
+          price,
+          benefit,
+          sponsored,
+          images,
+          author,
+          book_link,
+          created_at,
+          updated_at,
+          categories:book_categories(
+            category:categories(
+              id,
+              name
+            )
+          )
+        `)
+        .eq('book_categories.categories.name', category)
         .neq('status', 'Draft');
       
       if (error) throw error;
-      return data as Book[];
+
+      // Transform the data to match our Book type
+      return data.map(book => ({
+        ...book,
+        categories: book.categories.map((cat: any) => cat.category)
+      })) as Book[];
     }
   });
 
@@ -28,7 +51,6 @@ const CategoryPage = () => {
     // Update meta tags when category changes
     document.title = `${category} Books - Kids Book Haven`;
     
-    // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 
@@ -36,7 +58,6 @@ const CategoryPage = () => {
       );
     }
 
-    // Update OpenGraph tags
     const ogTitle = document.querySelector('meta[property="og:title"]');
     const ogDescription = document.querySelector('meta[property="og:description"]');
     

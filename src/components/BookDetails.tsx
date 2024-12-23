@@ -20,8 +20,10 @@ export const BookDetails = ({ book }: BookDetailsProps) => {
         )}
       </div>
       
-      <div className="flex gap-2 mb-4">
-        <Badge variant="outline">{book.category}</Badge>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {book.categories.map((category) => (
+          <Badge key={category.id} variant="outline">{category.name}</Badge>
+        ))}
         <Badge variant="secondary">{book.benefit}</Badge>
       </div>
       
