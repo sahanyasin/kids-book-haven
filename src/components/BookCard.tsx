@@ -40,7 +40,7 @@ export function BookCard({ book }: { book: Book }) {
           <h3 className="font-bold text-lg mb-2">{book.title}</h3>
           <p className="text-sm text-gray-600 mb-2">{book.description.substring(0, 100)}...</p>
           <div className="flex flex-wrap gap-2 mb-2">
-            {book.categories.map((category) => (
+            {(book.categories || []).filter(Boolean).map((category) => (
               <Badge key={category.id} variant="outline">{category.name}</Badge>
             ))}
           </div>
