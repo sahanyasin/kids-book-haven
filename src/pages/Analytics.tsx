@@ -8,7 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
 
 const Analytics = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const Analytics = () => {
         .from('admin_users')
         .select('id')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       return !!adminUser;
     }
@@ -56,7 +56,7 @@ const Analytics = () => {
   }
 
   // Process data for charts
-  const activityByType = activityData?.reduce((acc: any, curr: any) => {
+  const activityByType = activityData?.reduce((acc: Record<string, number>, curr) => {
     acc[curr.action_type] = (acc[curr.action_type] || 0) + 1;
     return acc;
   }, {});
@@ -90,14 +90,27 @@ const Analytics = () => {
           <CardContent>
             <div className="h-[300px]">
               <ChartContainer config={chartConfig}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Bar dataKey="value" fill="var(--color-activity)" />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <BarChart data={chartData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Bar 
+                    dataKey="value" 
+                    fill="var(--color-activity)" 
+                  />
+                  <ChartTooltip 
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent 
+                            active={active}
+                            payload={payload}
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                </BarChart>
               </ChartContainer>
             </div>
           </CardContent>
@@ -109,7 +122,7 @@ const Analytics = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {activityData?.slice(0, 10).map((activity: any) => (
+              {activityData?.slice(0, 10).map((activity) => (
                 <div key={activity.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">{activity.action_type}</p>
