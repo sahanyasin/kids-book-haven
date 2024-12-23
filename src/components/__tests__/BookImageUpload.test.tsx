@@ -9,7 +9,7 @@ describe('BookImageUpload Component', () => {
     description: 'Test Description',
     price: 9.99,
     category: 'Test Category',
-    benefit: 'Emotional Intelligence',
+    benefit: 'Character Building' as const,
     images: ['test-image.jpg'],
     author: 'Test Author',
     sponsored: false,

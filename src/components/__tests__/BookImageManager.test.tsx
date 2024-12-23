@@ -34,7 +34,7 @@ describe('BookImageManager Component', () => {
     description: 'Test Description',
     price: 9.99,
     category: 'Test Category',
-    benefit: 'Emotional Intelligence',
+    benefit: 'Character Building' as const,
     images: ['test-image-1.jpg', 'test-image-2.jpg'],
     author: 'Test Author',
     sponsored: false,
