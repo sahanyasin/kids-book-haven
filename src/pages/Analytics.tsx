@@ -66,6 +66,16 @@ const Analytics = () => {
     value,
   }));
 
+  const chartConfig = {
+    activity: {
+      label: "Activity Count",
+      theme: {
+        light: "#9b87f5",
+        dark: "#7c66d9"
+      }
+    }
+  };
+
   return (
     <div className="container py-8">
       <Button variant="outline" onClick={() => navigate(-1)} className="mb-6">
@@ -79,15 +89,13 @@ const Analytics = () => {
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
-              <ChartContainer>
+              <ChartContainer config={chartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Bar dataKey="value" fill="#9b87f5" />
-                    <ChartTooltip>
-                      <ChartTooltipContent />
-                    </ChartTooltip>
+                    <Bar dataKey="value" fill="var(--color-activity)" />
+                    <ChartTooltip content={<ChartTooltipContent />} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
