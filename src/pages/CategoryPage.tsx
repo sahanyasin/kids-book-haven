@@ -39,10 +39,9 @@ const CategoryPage = () => {
       
       if (error) throw error;
 
-      // Transform the data to match our Book type
       return data.map(book => ({
         ...book,
-        categories: book.categories.map((cat: any) => cat.category)
+        categories: book.categories?.map((cat: any) => cat.category) || []
       })) as Book[];
     }
   });

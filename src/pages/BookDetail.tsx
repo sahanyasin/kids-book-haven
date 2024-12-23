@@ -57,7 +57,7 @@ const BookDetail = () => {
       const metaDescription = document.querySelector('meta[name="description"]');
       if (metaDescription) {
         metaDescription.setAttribute('content', 
-          `${book.description.substring(0, 150)}... A ${book.category} book focusing on ${book.benefit}.`
+          `${book.description.substring(0, 150)}... A book focusing on ${book.benefit}.`
         );
       }
 

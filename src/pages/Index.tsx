@@ -46,6 +46,19 @@ const Index = () => {
     }
   });
 
+  const { data: featuredCategories = [] } = useQuery({
+    queryKey: ['featured-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('featured_categories')
+        .select('*')
+        .order('display_order');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   if (booksLoading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
@@ -70,7 +83,9 @@ const Index = () => {
 
   // Get books count for each category
   const getCategoryBookCount = (category: string) => {
-    return books.filter(book => book.categories.some(cat => cat.name === category)).length;
+    return books.filter(book => 
+      book.categories.some(cat => cat.name === category)
+    ).length;
   };
 
   return (
