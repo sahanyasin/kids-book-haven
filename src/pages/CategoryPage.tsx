@@ -5,6 +5,7 @@ import { BookSidebar } from "@/components/BookSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Book } from "@/types/books";
+import { useEffect } from "react";
 
 const CategoryPage = () => {
   const { category } = useParams();
@@ -16,12 +17,38 @@ const CategoryPage = () => {
         .from('books')
         .select('*')
         .eq('category', category)
-        .neq('status', 'Draft'); // Filter out draft books
+        .neq('status', 'Draft');
       
       if (error) throw error;
       return data as Book[];
     }
   });
+
+  useEffect(() => {
+    // Update meta tags when category changes
+    document.title = `${category} Books - Kids Book Haven`;
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        `Explore our collection of ${category} children's books. Find the perfect educational books for your child's development and learning journey.`
+      );
+    }
+
+    // Update OpenGraph tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    
+    if (ogTitle) {
+      ogTitle.setAttribute('content', `${category} Books - Kids Book Haven`);
+    }
+    if (ogDescription) {
+      ogDescription.setAttribute('content',
+        `Explore our collection of ${category} children's books. Find the perfect educational books for your child.`
+      );
+    }
+  }, [category]);
 
   if (isLoading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;

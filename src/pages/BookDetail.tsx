@@ -1,19 +1,15 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { useParams, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { BookSidebar } from "@/components/BookSidebar";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { BookImageManager } from "@/components/BookImageManager";
 import { BookDetails } from "@/components/BookDetails";
 import type { Book } from "@/types/books";
+import { useEffect } from "react";
 
 const BookDetail = () => {
   const { id } = useParams();
-  const { toast } = useToast();
 
   const { data: book, isLoading, error } = useQuery({
     queryKey: ['book', id],
@@ -29,6 +25,36 @@ const BookDetail = () => {
       return data as Book;
     }
   });
+
+  useEffect(() => {
+    if (book) {
+      // Update page title
+      document.title = `${book.title} by ${book.author} - Kids Book Haven`;
+      
+      // Update meta description
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', 
+          `${book.description.substring(0, 150)}... A ${book.category} book focusing on ${book.benefit}.`
+        );
+      }
+
+      // Update OpenGraph tags
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      
+      if (ogTitle) {
+        ogTitle.setAttribute('content', `${book.title} by ${book.author} - Kids Book Haven`);
+      }
+      if (ogDescription) {
+        ogDescription.setAttribute('content', book.description.substring(0, 150));
+      }
+      if (ogImage && book.images?.[0]) {
+        ogImage.setAttribute('content', book.images[0]);
+      }
+    }
+  }, [book]);
 
   if (isLoading) {
     return <div className="container py-8">Loading...</div>;
