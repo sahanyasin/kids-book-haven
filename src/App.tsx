@@ -13,6 +13,7 @@ import BenefitPage from "./pages/BenefitPage";
 import Sitemap from "./pages/Sitemap";
 import SubmitBook from "./pages/SubmitBook";
 import UserManagement from "./pages/UserManagement";
+import Analytics from "./pages/Analytics";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
@@ -80,6 +81,7 @@ const App = () => (
                 <Route path="/sitemap.xml" element={<Sitemap />} />
                 <Route path="/submit-book" element={<SubmitBook />} />
                 <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+                <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               </Routes>
             </main>
             <Footer />
