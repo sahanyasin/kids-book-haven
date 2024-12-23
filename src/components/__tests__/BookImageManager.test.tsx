@@ -34,9 +34,14 @@ describe('BookImageManager Component', () => {
     description: 'Test Description',
     price: 9.99,
     category: 'Test Category',
-    benefit: 'Test Benefit',
+    benefit: 'Emotional Intelligence',
     images: ['test-image-1.jpg', 'test-image-2.jpg'],
     author: 'Test Author',
+    sponsored: false,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
+    book_link: null,
+    status: 'Draft'
   };
 
   const renderWithQueryClient = (ui: React.ReactElement) => {

@@ -9,9 +9,14 @@ describe('BookImageUpload Component', () => {
     description: 'Test Description',
     price: 9.99,
     category: 'Test Category',
-    benefit: 'Test Benefit',
+    benefit: 'Emotional Intelligence',
     images: ['test-image.jpg'],
     author: 'Test Author',
+    sponsored: false,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
+    book_link: null,
+    status: 'Draft'
   };
 
   it('renders nothing for non-admin users', () => {
@@ -32,8 +37,5 @@ describe('BookImageUpload Component', () => {
     
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     fireEvent.change(uploadInput, { target: { files: [file] } });
-    
-    // Note: Full upload functionality testing would require mocking Supabase
-    // and is typically done in integration tests
   });
 });
