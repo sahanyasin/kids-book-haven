@@ -16,13 +16,35 @@ const BookDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('*')
+        .select(`
+          id,
+          title,
+          description,
+          price,
+          benefit,
+          sponsored,
+          images,
+          author,
+          book_link,
+          created_at,
+          updated_at,
+          categories:book_categories(
+            category:categories(
+              id,
+              name
+            )
+          )
+        `)
         .eq('id', id)
         .neq('status', 'Draft')
         .single();
       
       if (error) throw error;
-      return data as Book;
+      
+      return {
+        ...data,
+        categories: data.categories.map((cat: any) => cat.category)
+      } as Book;
     }
   });
 

@@ -33,7 +33,7 @@ describe('BookImageManager Component', () => {
     title: 'Test Book',
     description: 'Test Description',
     price: 9.99,
-    category: 'Test Category',
+    categories: [{ id: '1', name: 'Test Category' }],
     benefit: 'Character Building' as const,
     images: ['test-image-1.jpg', 'test-image-2.jpg'],
     author: 'Test Author',

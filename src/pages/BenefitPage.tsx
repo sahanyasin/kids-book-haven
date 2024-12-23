@@ -27,16 +27,35 @@ const BenefitPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('*')
+        .select(`
+          id,
+          title,
+          description,
+          price,
+          benefit,
+          sponsored,
+          images,
+          author,
+          book_link,
+          created_at,
+          updated_at,
+          categories:book_categories(
+            category:categories(
+              id,
+              name
+            )
+          )
+        `)
         .eq('benefit', benefit)
-        .neq('status', 'Draft') // Filter out draft books
-        .limit(12);
+        .neq('status', 'Draft');
       
       if (error) throw error;
-      return data as Book[];
-    },
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
+      
+      return data.map(book => ({
+        ...book,
+        categories: book.categories.map((cat: any) => cat.category)
+      })) as Book[];
+    }
   });
 
   if (error) {

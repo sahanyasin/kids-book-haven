@@ -9,10 +9,32 @@ const Sitemap = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('*');
+        .select(`
+          id,
+          title,
+          description,
+          price,
+          benefit,
+          sponsored,
+          images,
+          author,
+          book_link,
+          created_at,
+          updated_at,
+          categories:book_categories(
+            category:categories(
+              id,
+              name
+            )
+          )
+        `);
       
       if (error) throw error;
-      return data as Book[];
+      
+      return data.map(book => ({
+        ...book,
+        categories: book.categories.map((cat: any) => cat.category)
+      })) as Book[];
     }
   });
 
@@ -33,7 +55,7 @@ const Sitemap = () => {
     <lastmod>${book.updated_at || today}</lastmod>
     <priority>0.8</priority>
   </url>`).join('')}
-  ${Array.from(new Set(books.map(book => book.category))).map(category => `
+  ${Array.from(new Set(books.flatMap(book => book.categories.map(cat => cat.name)))).map(category => `
   <url>
     <loc>${baseUrl}/category/${encodeURIComponent(category)}</loc>
     <lastmod>${today}</lastmod>
@@ -47,7 +69,6 @@ const Sitemap = () => {
   </url>`).join('')}
 </urlset>`;
 
-    // Create a new document and set its content
     document.open('text/xml');
     document.write(xml);
     document.close();

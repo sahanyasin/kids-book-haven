@@ -16,28 +16,37 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('*')
+        .select(`
+          id,
+          title,
+          description,
+          price,
+          benefit,
+          sponsored,
+          images,
+          author,
+          book_link,
+          created_at,
+          updated_at,
+          categories:book_categories(
+            category:categories(
+              id,
+              name
+            )
+          )
+        `)
         .neq('status', 'Draft');
       
       if (error) throw error;
-      return data as Book[];
-    }
-  });
-
-  const { data: featuredCategories = [], isLoading: categoriesLoading } = useQuery({
-    queryKey: ['featured-categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('featured_categories')
-        .select('*')
-        .order('display_order');
       
-      if (error) throw error;
-      return data;
+      return data.map(book => ({
+        ...book,
+        categories: book.categories.map((cat: any) => cat.category)
+      })) as Book[];
     }
   });
 
-  if (booksLoading || categoriesLoading) {
+  if (booksLoading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
@@ -51,7 +60,7 @@ const Index = () => {
     return (
       book.title.toLowerCase().includes(searchLower) ||
       book.description.toLowerCase().includes(searchLower) ||
-      book.category.toLowerCase().includes(searchLower) ||
+      book.categories.some(cat => cat.name.toLowerCase().includes(searchLower)) ||
       book.benefit.toLowerCase().includes(searchLower)
     );
   });
@@ -61,7 +70,7 @@ const Index = () => {
 
   // Get books count for each category
   const getCategoryBookCount = (category: string) => {
-    return books.filter(book => book.category === category).length;
+    return books.filter(book => book.categories.some(cat => cat.name === category)).length;
   };
 
   return (
