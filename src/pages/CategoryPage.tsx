@@ -34,10 +34,13 @@ const CategoryPage = () => {
             )
           )
         `)
-        .eq('book_categories.categories.name', category)
+        .eq('category', category)
         .neq('status', 'Draft');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching books:', error);
+        throw error;
+      }
 
       return data.map(book => ({
         ...book,
