@@ -34,8 +34,20 @@ const CategoryPage = () => {
             )
           )
         `)
-        .eq('book_categories.categories.name', category)
-        .neq('status', 'Draft');
+        .eq('status', 'Published')
+        .in('id', 
+          supabase
+            .from('book_categories')
+            .select('book_id')
+            .eq('category_id', 
+              supabase
+                .from('categories')
+                .select('id')
+                .eq('name', category)
+                .single()
+                .then(res => res.data?.id)
+            )
+        );
       
       if (error) {
         console.error('Error fetching books:', error);
