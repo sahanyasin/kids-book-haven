@@ -34,7 +34,7 @@ const CategoryPage = () => {
             )
           )
         `)
-        .eq('category', category)
+        .eq('book_categories.categories.name', category)
         .neq('status', 'Draft');
       
       if (error) {
