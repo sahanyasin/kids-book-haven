@@ -152,7 +152,6 @@ export type Database = {
       }
       featured_categories: {
         Row: {
-          category: string
           category_id: string
           created_at: string | null
           display_order: number
@@ -160,7 +159,6 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          category: string
           category_id: string
           created_at?: string | null
           display_order: number
@@ -168,7 +166,6 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          category?: string
           category_id?: string
           created_at?: string | null
           display_order?: number

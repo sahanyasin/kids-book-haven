@@ -85,14 +85,25 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('featured_categories')
-        .select('*')
+        .select(`
+          id,
+          display_order,
+          category_id,
+          categories:categories(
+            id,
+            name
+          )
+        `)
         .order('display_order');
       
       if (error) {
         console.error('Error fetching categories:', error);
         throw error;
       }
-      return data;
+      return data.map(fc => ({
+        ...fc,
+        category: fc.categories.name
+      }));
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
