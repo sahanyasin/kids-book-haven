@@ -153,6 +153,7 @@ export type Database = {
       featured_categories: {
         Row: {
           category: string
+          category_id: string
           created_at: string | null
           display_order: number
           id: string
@@ -160,6 +161,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          category_id: string
           created_at?: string | null
           display_order: number
           id?: string
@@ -167,12 +169,21 @@ export type Database = {
         }
         Update: {
           category?: string
+          category_id?: string
           created_at?: string | null
           display_order?: number
           id?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "featured_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_activity: {
         Row: {
