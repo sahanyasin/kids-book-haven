@@ -13,32 +13,10 @@ const CategoryPage = () => {
   const { data: books = [], isLoading, error } = useQuery({
     queryKey: ['books', category],
     queryFn: async () => {
-      // First, get the category ID
-      const { data: categoryData, error: categoryError } = await supabase
-        .from('categories')
-        .select('id')
-        .eq('name', category)
-        .single();
+      if (!category) throw new Error('Category is required');
 
-      if (categoryError) {
-        console.error('Error fetching category:', categoryError);
-        throw categoryError;
-      }
-
-      // Then, get the book IDs for this category
-      const { data: bookCategories, error: bookCategoriesError } = await supabase
-        .from('book_categories')
-        .select('book_id')
-        .eq('category_id', categoryData.id);
-
-      if (bookCategoriesError) {
-        console.error('Error fetching book categories:', bookCategoriesError);
-        throw bookCategoriesError;
-      }
-
-      // Finally, get the books
-      const bookIds = bookCategories.map(bc => bc.book_id);
-      const { data, error: booksError } = await supabase
+      // Get books through the book_categories junction table
+      const { data, error } = await supabase
         .from('books')
         .select(`
           id,
@@ -60,11 +38,22 @@ const CategoryPage = () => {
           )
         `)
         .eq('status', 'Published')
-        .in('id', bookIds);
-      
-      if (booksError) {
-        console.error('Error fetching books:', booksError);
-        throw booksError;
+        .in('id', (
+          await supabase
+            .from('book_categories')
+            .select('book_id')
+            .eq('category_id', (
+              await supabase
+                .from('categories')
+                .select('id')
+                .eq('name', category)
+                .single()
+            )).then(res => res.data.map(bc => bc.book_id))
+        ));
+
+      if (error) {
+        console.error('Error fetching books:', error);
+        throw error;
       }
 
       return data.map(book => ({
