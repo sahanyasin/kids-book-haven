@@ -19,11 +19,17 @@ const CategoryPage = () => {
       const { data: categoryData, error: categoryError } = await supabase
         .from('categories')
         .select('id')
-        .eq('name', category)
+        .ilike('name', category)  // Using ilike for case-insensitive matching
         .single();
 
-      if (categoryError) throw categoryError;
-      if (!categoryData) throw new Error('Category not found');
+      if (categoryError) {
+        console.error('Error fetching category:', categoryError);
+        throw categoryError;
+      }
+      if (!categoryData) {
+        console.error('Category not found:', category);
+        throw new Error('Category not found');
+      }
 
       // Then get the book IDs for this category
       const { data: bookCategories, error: bookCategoriesError } = await supabase
@@ -31,8 +37,14 @@ const CategoryPage = () => {
         .select('book_id')
         .eq('category_id', categoryData.id);
 
-      if (bookCategoriesError) throw bookCategoriesError;
-      if (!bookCategories) return [];
+      if (bookCategoriesError) {
+        console.error('Error fetching book categories:', bookCategoriesError);
+        throw bookCategoriesError;
+      }
+      if (!bookCategories || bookCategories.length === 0) {
+        console.log('No books found for category:', category);
+        return [];
+      }
 
       // Finally get the books with their categories
       const { data: booksData, error: booksError } = await supabase
@@ -59,8 +71,13 @@ const CategoryPage = () => {
         .eq('status', 'Published')
         .in('id', bookCategories.map(bc => bc.book_id));
 
-      if (booksError) throw booksError;
+      if (booksError) {
+        console.error('Error fetching books:', booksError);
+        throw booksError;
+      }
       if (!booksData) return [];
+
+      console.log('Found books:', booksData); // Debug log
 
       return booksData.map(book => ({
         ...book,
