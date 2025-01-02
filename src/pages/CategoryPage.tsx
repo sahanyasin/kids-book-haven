@@ -15,11 +15,14 @@ const CategoryPage = () => {
     queryFn: async () => {
       if (!category) throw new Error('Category is required');
 
+      const decodedCategory = decodeURIComponent(category);
+      console.log('Searching for category:', decodedCategory);
+
       // First get the category ID
       const { data: categoryData, error: categoryError } = await supabase
         .from('categories')
         .select('id')
-        .eq('name', 'Educational')  // Hardcoding for testing
+        .eq('name', decodedCategory)
         .maybeSingle();
 
       if (categoryError) {
@@ -27,11 +30,11 @@ const CategoryPage = () => {
         throw categoryError;
       }
       if (!categoryData) {
-        console.error('Category not found:', category);
+        console.error('Category not found:', decodedCategory);
         throw new Error('Category not found');
       }
 
-      console.log('Found category:', categoryData); // Debug log
+      console.log('Found category:', categoryData);
 
       // Then get the book IDs for this category
       const { data: bookCategories, error: bookCategoriesError } = await supabase
@@ -44,10 +47,10 @@ const CategoryPage = () => {
         throw bookCategoriesError;
       }
 
-      console.log('Found book categories:', bookCategories); // Debug log
+      console.log('Found book categories:', bookCategories);
 
       if (!bookCategories || bookCategories.length === 0) {
-        console.log('No books found for category:', category);
+        console.log('No books found for category:', decodedCategory);
         return [];
       }
 
@@ -81,7 +84,7 @@ const CategoryPage = () => {
         throw booksError;
       }
 
-      console.log('Found books:', booksData); // Debug log
+      console.log('Found books:', booksData);
 
       if (!booksData) return [];
 
@@ -130,7 +133,7 @@ const CategoryPage = () => {
       <div className="min-h-screen flex w-full">
         <BookSidebar />
         <div className="flex-1 container py-8">
-          <h1 className="text-4xl font-bold mb-8">{category}</h1>
+          <h1 className="text-4xl font-bold mb-8">{decodeURIComponent(category)}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {books.map(book => (
               <BookCard key={book.id} book={book} />
