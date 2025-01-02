@@ -15,27 +15,8 @@ const CategoryPage = () => {
     queryFn: async () => {
       if (!category) throw new Error('Category is required');
 
-      // First get the category ID
-      const { data: categoryData, error: categoryError } = await supabase
-        .from('categories')
-        .select('id')
-        .eq('name', category)
-        .single();
-
-      if (categoryError) throw categoryError;
-      if (!categoryData) throw new Error('Category not found');
-
-      // Then get the book IDs for this category
-      const { data: bookCategories, error: bookCategoriesError } = await supabase
-        .from('book_categories')
-        .select('book_id')
-        .eq('category_id', categoryData.id);
-
-      if (bookCategoriesError) throw bookCategoriesError;
-      if (!bookCategories) return [];
-
-      // Finally get the books with their categories
-      const { data: booksData, error: booksError } = await supabase
+      // Get books through the book_categories junction table
+      const { data, error } = await supabase
         .from('books')
         .select(`
           id,
@@ -57,12 +38,24 @@ const CategoryPage = () => {
           )
         `)
         .eq('status', 'Published')
-        .in('id', bookCategories.map(bc => bc.book_id));
+        .in('id', (
+          await supabase
+            .from('book_categories')
+            .select('book_id')
+            .eq('category_id', (
+              await supabase
+                .from('categories')
+                .select('id')
+                .eq('name', category)
+                .single()
+            ).then(res => res.data?.id)).then(res => res.data?.map(bc => bc.book_id) || []));
 
-      if (booksError) throw booksError;
-      if (!booksData) return [];
+      if (error) {
+        console.error('Error fetching books:', error);
+        throw error;
+      }
 
-      return booksData.map(book => ({
+      return data.map(book => ({
         ...book,
         categories: book.categories?.map((cat: any) => cat.category) || []
       })) as Book[];
