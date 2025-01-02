@@ -19,8 +19,8 @@ const CategoryPage = () => {
       const { data: categoryData, error: categoryError } = await supabase
         .from('categories')
         .select('id')
-        .ilike('name', category)  // Using ilike for case-insensitive matching
-        .single();
+        .eq('name', 'Educational')  // Hardcoding for testing
+        .maybeSingle();
 
       if (categoryError) {
         console.error('Error fetching category:', categoryError);
@@ -30,6 +30,8 @@ const CategoryPage = () => {
         console.error('Category not found:', category);
         throw new Error('Category not found');
       }
+
+      console.log('Found category:', categoryData); // Debug log
 
       // Then get the book IDs for this category
       const { data: bookCategories, error: bookCategoriesError } = await supabase
@@ -41,12 +43,15 @@ const CategoryPage = () => {
         console.error('Error fetching book categories:', bookCategoriesError);
         throw bookCategoriesError;
       }
+
+      console.log('Found book categories:', bookCategories); // Debug log
+
       if (!bookCategories || bookCategories.length === 0) {
         console.log('No books found for category:', category);
         return [];
       }
 
-      // Finally get the books with their categories
+      // Finally get the books
       const { data: booksData, error: booksError } = await supabase
         .from('books')
         .select(`
@@ -75,9 +80,10 @@ const CategoryPage = () => {
         console.error('Error fetching books:', booksError);
         throw booksError;
       }
-      if (!booksData) return [];
 
       console.log('Found books:', booksData); // Debug log
+
+      if (!booksData) return [];
 
       return booksData.map(book => ({
         ...book,
