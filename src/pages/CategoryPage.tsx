@@ -55,20 +55,13 @@ const CategoryPage = () => {
       }
 
       // Finally get the books
+      const bookIds = bookCategories.map(bc => bc.book_id);
+      console.log('Fetching books with IDs:', bookIds);
+
       const { data: booksData, error: booksError } = await supabase
         .from('books')
         .select(`
-          id,
-          title,
-          description,
-          price,
-          benefit,
-          sponsored,
-          images,
-          author,
-          book_link,
-          created_at,
-          updated_at,
+          *,
           categories:book_categories(
             category:categories(
               id,
@@ -76,8 +69,8 @@ const CategoryPage = () => {
             )
           )
         `)
-        .eq('status', 'Published')
-        .in('id', bookCategories.map(bc => bc.book_id));
+        .in('id', bookIds)
+        .eq('status', 'Published');
 
       if (booksError) {
         console.error('Error fetching books:', booksError);
