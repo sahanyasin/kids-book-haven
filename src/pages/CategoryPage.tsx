@@ -36,40 +36,19 @@ const CategoryPage = () => {
 
       console.log('Found category:', categoryData);
 
-      // Then get the book IDs for this category
-      const { data: bookCategories, error: bookCategoriesError } = await supabase
-        .from('book_categories')
-        .select('book_id')
-        .eq('category_id', categoryData.id);
-
-      if (bookCategoriesError) {
-        console.error('Error fetching book categories:', bookCategoriesError);
-        throw bookCategoriesError;
-      }
-
-      console.log('Found book categories:', bookCategories);
-
-      if (!bookCategories || bookCategories.length === 0) {
-        console.log('No books found for category:', decodedCategory);
-        return [];
-      }
-
-      // Finally get the books
-      const bookIds = bookCategories.map(bc => bc.book_id);
-      console.log('Fetching books with IDs:', bookIds);
-
+      // Then get all books that have this category
       const { data: booksData, error: booksError } = await supabase
         .from('books')
         .select(`
           *,
-          categories:book_categories(
-            category:categories(
+          categories:book_categories!inner(
+            category:categories!inner(
               id,
               name
             )
           )
         `)
-        .in('id', bookIds)
+        .eq('categories.category.id', categoryData.id)
         .eq('status', 'Published');
 
       if (booksError) {
@@ -78,8 +57,6 @@ const CategoryPage = () => {
       }
 
       console.log('Found books:', booksData);
-
-      if (!booksData) return [];
 
       return booksData.map(book => ({
         ...book,
