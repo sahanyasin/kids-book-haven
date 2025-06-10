@@ -14,6 +14,7 @@ export const BookImage = ({ src, alt, onRemove, isAdmin }: BookImageProps) => {
         src={src}
         alt={alt}
         className="w-full rounded-lg shadow-md"
+        loading="lazy"
       />
       {isAdmin && (
         <Button

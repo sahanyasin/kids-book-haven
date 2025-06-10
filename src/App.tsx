@@ -12,12 +12,11 @@ import BookDetail from "./pages/BookDetail";
 import BenefitPage from "./pages/BenefitPage";
 import Sitemap from "./pages/Sitemap";
 import SubmitBook from "./pages/SubmitBook";
-import UserManagement from "./pages/UserManagement";
-import Analytics from "./pages/Analytics";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
 import { UserProfile } from "./components/UserProfile";
+import BulkUpload from "./pages/BulkUpload";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -80,8 +79,9 @@ const App = () => (
                 <Route path="/book/:id" element={<BookDetail />} />
                 <Route path="/sitemap.xml" element={<Sitemap />} />
                 <Route path="/submit-book" element={<SubmitBook />} />
-                <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
-                <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+                {/* <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} /> */}
+                {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
+                <Route path="/bulk-upload" element={<ProtectedRoute><BulkUpload /></ProtectedRoute>} />
               </Routes>
             </main>
             <Footer />

@@ -19,30 +19,41 @@ export default function SubmitBook() {
       description: "",
       author: "",
       price: "",
-      category: "",
-      benefit: "Emotional Intelligence",
+      benefits: [],
       book_link: "",
+      status: "Draft",
     },
   });
 
   const onSubmit = async (data: BookFormValues) => {
     try {
-      const { error } = await supabase
+      const { data: bookData, error: bookError } = await supabase
         .from('books')
         .insert({
           title: data.title,
           description: data.description,
           author: data.author,
           price: parseFloat(data.price),
-          category: data.category,
-          benefit: data.benefit,
           book_link: data.book_link || null,
-          images: ["placeholder.svg"],
           sponsored: false,
           status: 'Draft'
-        });
+        })
+        .select('id')
+        .single();
 
-      if (error) throw error;
+      if (bookError) throw bookError;
+      if (!bookData) throw new Error('Failed to create book');
+
+      const { error: benefitsError } = await supabase
+        .from('book_benefits')
+        .insert(
+          data.benefits.map(benefitId => ({
+            book_id: bookData.id,
+            benefit_id: benefitId
+          }))
+        );
+
+      if (benefitsError) throw benefitsError;
 
       toast({
         title: "Success!",
@@ -50,11 +61,19 @@ export default function SubmitBook() {
       });
 
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting book:', error);
+      let errorMessage = "There was a problem submitting your book. Please try again.";
+
+      if (error.code === '23505') { // Unique violation error code
+        errorMessage = "A book with this title already exists. Please choose a different title.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       toast({
         title: "Error",
-        description: "There was a problem submitting your book. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }

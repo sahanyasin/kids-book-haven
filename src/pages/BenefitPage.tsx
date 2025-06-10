@@ -32,28 +32,37 @@ const BenefitPage = () => {
           title,
           description,
           price,
-          benefit,
+          benefits:book_benefits!inner(
+            benefit:benefits(
+              id,
+              name
+            )
+          ),
           sponsored,
           images,
           author,
           book_link,
           created_at,
           updated_at,
+          status,
           categories:book_categories(
             category:categories(
               id,
               name
             )
-          )
+          ),
+          book_images(url, order_index)
         `)
-        .eq('benefit', benefit)
+        .eq('benefits.benefit.name', benefit)
         .neq('status', 'Draft');
       
       if (error) throw error;
       
       return data.map(book => ({
         ...book,
-        categories: book.categories.map((cat: any) => cat.category)
+        images: book.book_images ? book.book_images.sort((a, b) => a.order_index - b.order_index).map((img: any) => img.url) : [],
+        categories: book.categories.map((cat: any) => cat.category),
+        benefits: book.benefits ? book.benefits.map((bb: any) => bb.benefit) : [],
       })) as Book[];
     }
   });

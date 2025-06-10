@@ -24,7 +24,9 @@ export const BookDetails = ({ book }: BookDetailsProps) => {
         {book.categories.map((category) => (
           <Badge key={category.id} variant="outline">{category.name}</Badge>
         ))}
-        <Badge variant="secondary">{book.benefit}</Badge>
+        {book.benefits.map((benefit) => (
+          <Badge key={benefit.id} variant="secondary">{benefit.name}</Badge>
+        ))}
       </div>
       
       <p className="text-lg mb-6">{book.description}</p>

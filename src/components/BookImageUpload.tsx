@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Book } from "@/types/books";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BookImageUploadProps {
   book: Book;
@@ -10,6 +11,7 @@ interface BookImageUploadProps {
 
 export const BookImageUpload = ({ book, isAdmin }: BookImageUploadProps) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -31,20 +33,37 @@ export const BookImageUpload = ({ book, isAdmin }: BookImageUploadProps) => {
         .from('book-images')
         .getPublicUrl(data.path);
 
-      const newImages = [...book.images, publicUrl];
-      
-      const { error: updateError } = await supabase
-        .from('books')
-        .update({ images: newImages })
-        .eq('id', book.id);
+      // Get the current max order_index for this book
+      const { data: existingImages, error: fetchError } = await supabase
+        .from('book_images')
+        .select('order_index')
+        .eq('book_id', book.id)
+        .order('order_index', { ascending: false })
+        .limit(1);
 
-      if (updateError) throw updateError;
+      if (fetchError) throw fetchError;
+
+      const newOrderIndex = existingImages && existingImages.length > 0 
+        ? existingImages[0].order_index + 1 
+        : 0;
+
+      // Insert the new image into the book_images table
+      const { error: insertError } = await supabase
+        .from('book_images')
+        .insert({
+          book_id: book.id,
+          url: publicUrl,
+          order_index: newOrderIndex,
+        });
+
+      if (insertError) throw insertError;
 
       toast({
         title: "Success",
         description: "Image uploaded successfully",
       });
       
+      queryClient.invalidateQueries({ queryKey: ['books'] });
       window.location.reload();
     } catch (error) {
       console.error('Error uploading image:', error);

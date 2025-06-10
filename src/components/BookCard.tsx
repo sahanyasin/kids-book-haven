@@ -6,10 +6,24 @@ import type { Book } from "@/types/books";
 export function BookCard({ book }: { book: Book }) {
   const getImageUrl = (imageUrl: string | undefined) => {
     if (!imageUrl) return '/placeholder.svg';
-    
-    return imageUrl.startsWith('http') 
-      ? imageUrl 
-      : `https://images.unsplash.com/${imageUrl}`;
+
+    try {
+      const url = new URL(imageUrl);
+      // Only allow http, https, or data URLs
+      if (url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'data:') {
+        return imageUrl;
+      }
+    } catch (e) {
+      // If it's not a valid URL, it might be a relative path, so check if it starts with / or is a placeholder
+      if (imageUrl.startsWith('/') || imageUrl === 'placeholder.svg') {
+        return imageUrl;
+      }
+      // If it's a relative path to Unsplash (legacy), convert it.
+      if (!imageUrl.startsWith('http')) {
+        return `https://images.unsplash.com/${imageUrl}`;
+      }
+    }
+    return '/placeholder.svg'; // Fallback for unsafe or invalid URLs
   };
 
   return (
@@ -29,6 +43,7 @@ export function BookCard({ book }: { book: Book }) {
             src={getImageUrl(book.images?.[0])}
             alt={`Cover of ${book.title}`}
             className="w-full h-48 object-cover rounded-t-lg"
+            loading="lazy"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.src = '/placeholder.svg';
@@ -45,7 +60,11 @@ export function BookCard({ book }: { book: Book }) {
             ))}
           </div>
           <div className="flex justify-between items-center">
-            <Badge variant="secondary">{book.benefit}</Badge>
+            <div className="flex flex-wrap gap-1">
+              {(book.benefits || []).map((benefit) => (
+                <Badge key={benefit.id} variant="secondary">{benefit.name}</Badge>
+              ))}
+            </div>
             <span className="font-bold text-primary" aria-label={`Price: $${book.price}`}>
               ${book.price}
             </span>

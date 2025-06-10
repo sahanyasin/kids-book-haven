@@ -3,12 +3,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import type { BookFormValues } from "@/schemas/bookSchema";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BookFormFieldsProps {
   form: UseFormReturn<BookFormValues>;
 }
 
 export function BookFormFields({ form }: BookFormFieldsProps) {
+  const { data: benefits = [] } = useQuery({
+    queryKey: ['benefits'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('benefits')
+        .select('id, name')
+        .order('name');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   return (
     <>
       <FormField
@@ -69,13 +85,44 @@ export function BookFormFields({ form }: BookFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="category"
-        render={({ field }) => (
+        name="benefits"
+        render={() => (
           <FormItem>
-            <FormLabel>Category</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter category" {...field} />
-            </FormControl>
+            <FormLabel>Benefits</FormLabel>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {benefits.map((benefit) => (
+                <FormField
+                  key={benefit.id}
+                  control={form.control}
+                  name="benefits"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={benefit.id}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(benefit.id)}
+                            onCheckedChange={(checked) => {
+                              const currentValue = field.value || [];
+                              if (checked) {
+                                field.onChange([...currentValue, benefit.id]);
+                              } else {
+                                field.onChange(currentValue.filter((id) => id !== benefit.id));
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {benefit.name}
+                        </FormLabel>
+                      </FormItem>
+                    );
+                  }}
+                />
+              ))}
+            </div>
             <FormMessage />
           </FormItem>
         )}
@@ -83,20 +130,18 @@ export function BookFormFields({ form }: BookFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="benefit"
+        name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Benefit</FormLabel>
+            <FormLabel>Status</FormLabel>
             <FormControl>
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 {...field}
               >
-                <option value="Emotional Intelligence">Emotional Intelligence</option>
-                <option value="Problem Solving">Problem Solving</option>
-                <option value="Social Skills">Social Skills</option>
-                <option value="Character Building">Character Building</option>
-                <option value="Language Development">Language Development</option>
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+                <option value="Rejected">Rejected</option>
               </select>
             </FormControl>
             <FormMessage />

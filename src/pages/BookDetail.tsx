@@ -21,19 +21,26 @@ const BookDetail = () => {
           title,
           description,
           price,
-          benefit,
+          benefits:book_benefits(
+            benefit:benefits(
+              id,
+              name
+            )
+          ),
           sponsored,
           images,
           author,
           book_link,
           created_at,
           updated_at,
+          status,
           categories:book_categories(
             category:categories(
               id,
               name
             )
-          )
+          ),
+          book_images(url, order_index)
         `)
         .eq('id', id)
         .neq('status', 'Draft')
@@ -41,9 +48,14 @@ const BookDetail = () => {
       
       if (error) throw error;
       
+      // book_images'ı sıralayarak Book tipine uygun hale getir
+      const sortedImages = data.book_images.sort((a, b) => a.order_index - b.order_index).map((img: { url: string }) => img.url);
+
       return {
         ...data,
-        categories: data.categories.map((cat: any) => cat.category)
+        images: sortedImages,
+        categories: data.categories.map((cat: any) => cat.category),
+        benefits: data.benefits ? data.benefits.map((bb: any) => bb.benefit) : [],
       } as Book;
     }
   });
@@ -57,7 +69,7 @@ const BookDetail = () => {
       const metaDescription = document.querySelector('meta[name="description"]');
       if (metaDescription) {
         metaDescription.setAttribute('content', 
-          `${book.description.substring(0, 150)}... A book focusing on ${book.benefit}.`
+          `${book.description.substring(0, 150)}... A book focusing on ${book.benefits?.[0]?.name}.`
         );
       }
 

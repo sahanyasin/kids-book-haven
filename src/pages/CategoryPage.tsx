@@ -40,13 +40,30 @@ const CategoryPage = () => {
       const { data: booksData, error: booksError } = await supabase
         .from('books')
         .select(`
-          *,
+          id,
+          title,
+          description,
+          price,
+          benefits:book_benefits(
+            benefit:benefits(
+              id,
+              name
+            )
+          ),
+          sponsored,
+          images,
+          author,
+          book_link,
+          created_at,
+          updated_at,
+          status,
           categories:book_categories!inner(
             category:categories!inner(
               id,
               name
             )
-          )
+          ),
+          book_images(url, order_index)
         `)
         .eq('categories.category.id', categoryData.id)
         .eq('status', 'Published');
@@ -60,7 +77,9 @@ const CategoryPage = () => {
 
       return booksData.map(book => ({
         ...book,
-        categories: book.categories?.map((cat: any) => cat.category) || []
+        images: book.book_images ? book.book_images.sort((a, b) => a.order_index - b.order_index).map((img: any) => img.url) : [],
+        categories: book.categories?.map((cat: any) => cat.category) || [],
+        benefits: book.benefits ? book.benefits.map((bb: any) => bb.benefit) : [],
       })) as Book[];
     }
   });

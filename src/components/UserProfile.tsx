@@ -17,30 +17,40 @@ export const UserProfile = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      checkAdminStatus(session?.user?.id);
+      if (session?.user?.id) {
+        checkAdminStatus(session.user.id);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      checkAdminStatus(session?.user?.id);
+      if (session?.user?.id) {
+        checkAdminStatus(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkAdminStatus = async (userId: string | undefined) => {
-    if (!userId) {
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data: adminUser, error } = await supabase
+        .from('admin_users')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+        return;
+      }
+
+      setIsAdmin(adminUser?.role === 'admin');
+    } catch (error) {
+      console.error('Error in checkAdminStatus:', error);
       setIsAdmin(false);
-      return;
     }
-
-    const { data: adminUser } = await supabase
-      .from('admin_users')
-      .select('id')
-      .eq('id', userId)
-      .single();
-
-    setIsAdmin(!!adminUser);
   };
 
   const handleLogout = async () => {
@@ -64,11 +74,8 @@ export const UserProfile = () => {
           </DropdownMenuItem>
           {isAdmin && (
             <>
-              <DropdownMenuItem onClick={() => navigate('/user-management')}>
-                User Management
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/analytics')}>
-                Analytics
+              <DropdownMenuItem onClick={() => navigate('/bulk-upload')}>
+                Bulk Upload
               </DropdownMenuItem>
             </>
           )}

@@ -32,13 +32,25 @@ export const BookImageManager = ({ book }: BookImageManagerProps) => {
     if (!isAdmin) return;
     
     try {
-      const newImages = book.images.filter(img => img !== imageUrl);
-      const { error } = await supabase
-        .from('books')
-        .update({ images: newImages })
-        .eq('id', book.id);
+      // Extract file path from public URL for Supabase Storage removal
+      const urlParts = imageUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `public/${fileName}`;
 
-      if (error) throw error;
+      // Remove from Supabase Storage
+      const { error: storageError } = await supabase.storage
+        .from('book-images')
+        .remove([filePath]);
+      
+      if (storageError) throw storageError;
+
+      // Remove from book_images table
+      const { error: dbError } = await supabase
+        .from('book_images')
+        .delete()
+        .eq('url', imageUrl);
+
+      if (dbError) throw dbError;
 
       toast({
         title: "Success",
