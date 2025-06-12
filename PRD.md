@@ -154,6 +154,10 @@ Kids Book Haven, çocuklar için kitap önerileri sunan ve kitap incelemelerini 
   - [ ] SSS sayfasının/bölümünün tasarlanması ⚠️
   - [ ] Sıkça sorulan soruların ve cevaplarının eklenmesi ⚠️
   - [ ] Gerekli yönlendirmelerin yapılması ⚠️
+- [ ] Benefits Tablosu İyileştirmesi 🚨
+  - [ ] Benefits tablosunun otomatik oluşturulması için getBenefitId fonksiyonunun güncellenmesi
+  - [ ] Var olmayan benefit'lerin otomatik oluşturulması
+  - [ ] Hata yönetiminin iyileştirilmesi
 
 ### 8.2 Orta Vadeli İyileştirmeler 📅
 1. **Kod Organizasyonu**

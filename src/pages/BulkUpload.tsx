@@ -20,11 +20,28 @@ const BulkUpload = () => {
   };
 
   const getBenefitId = async (benefitName) => {
-    const { data, error } = await supabase
+    // First, try to get the benefit
+    let { data, error } = await supabase
       .from('benefits')
       .select('id')
       .eq('name', benefitName)
       .single();
+
+    // If the benefit doesn't exist, create it
+    if (error && error.code === 'PGRST116') {
+      const { data: newBenefit, error: insertError } = await supabase
+        .from('benefits')
+        .insert({ name: benefitName })
+        .select('id')
+        .single();
+
+      if (insertError) {
+        console.error('Error creating benefit:', insertError);
+        return null;
+      }
+
+      return newBenefit.id;
+    }
 
     if (error) {
       console.error('Error fetching benefit ID:', error);
