@@ -143,6 +143,17 @@ Kids Book Haven, çocuklar için kitap önerileri sunan ve kitap incelemelerini 
     - [ ] Kitap Görüntüleme: Faydaların bir dizi olarak gösterildiği yerlerin güncellenmesi ✅
     - [ ] Toplu Yükleme: Tek fayda yerine birden fazla faydayı işleyecek şekilde güncellenmesi ✅
     - [ ] Filtreleme/Arama: Birden fazla faydayı işleyecek şekilde mantığın güncellenmesi ✅
+- [ ] Bize Ulaşın Bölümü 🚨
+  - [ ] Bize ulaşın sayfasının/bölümünün tasarlanması ⚠️
+  - [ ] İletişim formu/bilgilerinin eklenmesi ⚠️
+  - [ ] Gerekli yönlendirmelerin yapılması ⚠️
+- [ ] Öne Çıkan Kategorilerin Konumlandırılması 🚨
+  - [ ] `Index.tsx` dosyasında "Featured Categories" bölümünün yerinin belirlenmesi ⚠️
+  - [ ] Bölümün sayfanın en altına taşınması ⚠️
+- [ ] SSS (FAQ) Bölümü 🚨
+  - [ ] SSS sayfasının/bölümünün tasarlanması ⚠️
+  - [ ] Sıkça sorulan soruların ve cevaplarının eklenmesi ⚠️
+  - [ ] Gerekli yönlendirmelerin yapılması ⚠️
 
 ### 8.2 Orta Vadeli İyileştirmeler 📅
 1. **Kod Organizasyonu**
@@ -166,6 +177,11 @@ Kids Book Haven, çocuklar için kitap önerileri sunan ve kitap incelemelerini 
    - Kitap etiketleri için tag sistemi
    - Veritabanı migration planının oluşturulması
    - Veri bütünlüğü kontrollerinin güçlendirilmesi
+
+5. **Harici Entegrasyonlar** ⚠️
+   - [ ] Amazon Kitap Verisi Entegrasyonu ⚠️
+     - [ ] Amazon API veya Web Kazıma (Scraping) yoluyla kitap verisi (fiyat, açıklama vb.) çekilmesi ⚠️
+     - [ ] Entegrasyon yöntemine ve kapsamına karar verilmesi ⚠️
 
 ### 8.3 Uzun Vadeli Geliştirmeler 🎯
 1. **SEO ve Pazarlama**

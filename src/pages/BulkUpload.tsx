@@ -19,6 +19,21 @@ const BulkUpload = () => {
     }
   };
 
+  const getBenefitId = async (benefitName) => {
+    const { data, error } = await supabase
+      .from('benefits')
+      .select('id')
+      .eq('name', benefitName)
+      .single();
+
+    if (error) {
+      console.error('Error fetching benefit ID:', error);
+      return null;
+    }
+
+    return data.id;
+  };
+
   const handleUpload = async () => {
     if (!selectedFile) {
       setMessage('Please select a file to upload.');
@@ -72,17 +87,22 @@ const BulkUpload = () => {
 
             // Then insert the benefits if any
             if (Array.isArray(book.benefits) && book.benefits.length > 0 && newBook?.id) {
-              const { error: benefitsError } = await supabase
-                .from('book_benefits')
-                .insert(
-                  book.benefits.map(benefitName => ({
-                    book_id: newBook.id,
-                    benefit_id: benefitName // Assuming the JSON contains benefit names that match the database
-                  }))
-                );
+              const benefitIds = await Promise.all(book.benefits.map(benefitName => getBenefitId(benefitName)));
+              const validBenefitIds = benefitIds.filter(id => id !== null);
 
-              if (benefitsError) {
-                console.error('Error inserting benefits for book:', book.title, benefitsError);
+              if (validBenefitIds.length > 0) {
+                const { error: benefitsError } = await supabase
+                  .from('book_benefits')
+                  .insert(
+                    validBenefitIds.map(benefitId => ({
+                      book_id: newBook.id,
+                      benefit_id: benefitId
+                    }))
+                  );
+
+                if (benefitsError) {
+                  console.error('Error inserting benefits for book:', book.title, benefitsError);
+                }
               }
             }
 
