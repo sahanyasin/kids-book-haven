@@ -30,12 +30,12 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-const BookSection = ({ title, books }: { title: string; books: Book[] }) => (
+const BookSection = ({ title, books, isFirstSection = false }: { title: string; books: Book[]; isFirstSection?: boolean }) => (
   <section className="mb-12">
     <h2 className="text-2xl font-bold mb-4">{title}</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {books.map((book) => (
-        <BookCard key={book.id} book={book} />
+      {books.map((book, index) => (
+        <BookCard key={book.id} book={book} priority={isFirstSection && index < 4} />
       ))}
     </div>
   </section>
@@ -100,7 +100,7 @@ const Index = () => {
           ...book,
           images: book.book_images ? book.book_images.sort((a, b) => a.order_index - b.order_index).map((img: any) => img.url) : [],
           categories: book.categories.map((cat: any) => cat.category),
-          benefits: book.benefits ? book.benefits.map((bb: any) => bb.benefit) : [],
+          benefits: book.benefits ? book.benefits.map((bb: any) => bb.benefit).filter(Boolean) : [],
         })) as Book[],
         count: count || 0,
       };

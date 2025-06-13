@@ -78,6 +78,7 @@ export const BookImageManager = ({ book }: BookImageManagerProps) => {
             alt={`${book.title} - Image ${index + 1}`}
             onRemove={handleRemoveImage}
             isAdmin={!!isAdmin}
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         ))}
       </div>

@@ -2,8 +2,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import type { Book } from "@/types/books";
+import { BookImage } from "./BookImage";
 
-export function BookCard({ book }: { book: Book }) {
+export function BookCard({ book, priority = false }: { book: Book; priority?: boolean }) {
   const getImageUrl = (imageUrl: string | undefined) => {
     if (!imageUrl) return '/placeholder.svg';
 
@@ -39,16 +40,13 @@ export function BookCard({ book }: { book: Book }) {
               Sponsored
             </Badge>
           )}
-          <img
+          <BookImage
             src={getImageUrl(book.images?.[0])}
             alt={`Cover of ${book.title}`}
-            className="w-full h-48 object-cover rounded-t-lg"
-            loading="lazy"
-            onError={(e) => {
-              const img = e.target as HTMLImageElement;
-              img.src = '/placeholder.svg';
-              img.alt = 'Book cover placeholder';
-            }}
+            onRemove={() => {}}
+            isAdmin={false}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={priority}
           />
         </CardHeader>
         <CardContent>
@@ -61,7 +59,7 @@ export function BookCard({ book }: { book: Book }) {
           </div>
           <div className="flex justify-between items-center">
             <div className="flex flex-wrap gap-1">
-              {(book.benefits || []).map((benefit) => (
+              {(book.benefits || []).filter(Boolean).map((benefit) => (
                 <Badge key={benefit.id} variant="secondary">{benefit.name}</Badge>
               ))}
             </div>

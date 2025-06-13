@@ -55,7 +55,7 @@ const BookDetail = () => {
         ...data,
         images: sortedImages,
         categories: data.categories.map((cat: any) => cat.category),
-        benefits: data.benefits ? data.benefits.map((bb: any) => bb.benefit) : [],
+        benefits: data.benefits ? data.benefits.map((bb: any) => bb.benefit).filter(Boolean) : [],
       } as Book;
     }
   });

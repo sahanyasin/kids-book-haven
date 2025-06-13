@@ -24,7 +24,7 @@ export const BookDetails = ({ book }: BookDetailsProps) => {
         {book.categories.map((category) => (
           <Badge key={category.id} variant="outline">{category.name}</Badge>
         ))}
-        {book.benefits.map((benefit) => (
+        {(book.benefits || []).filter(Boolean).map((benefit) => (
           <Badge key={benefit.id} variant="secondary">{benefit.name}</Badge>
         ))}
       </div>

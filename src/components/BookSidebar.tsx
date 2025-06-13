@@ -63,7 +63,7 @@ export function BookSidebar() {
                   </SidebarMenuItem>
                 ))
               ) : (
-                benefits.map((benefit) => {
+                benefits.filter(Boolean).map((benefit) => {
                   const IconComponent = benefitIcons[benefit.name] || Book;
                   return (
                     <SidebarMenuItem key={benefit.id}>

@@ -3,20 +3,21 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import Index from "./pages/Index";
-import CategoryPage from "./pages/CategoryPage";
-import BookDetail from "./pages/BookDetail";
-import BenefitPage from "./pages/BenefitPage";
-import Sitemap from "./pages/Sitemap";
-import SubmitBook from "./pages/SubmitBook";
-import Login from "./pages/Login";
-import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
 import { UserProfile } from "./components/UserProfile";
-import BulkUpload from "./pages/BulkUpload";
+
+const Index = lazy(() => import("./pages/Index"));
+const CategoryPage = lazy(() => import("./pages/CategoryPage"));
+const BookDetail = lazy(() => import("./pages/BookDetail"));
+const BenefitPage = lazy(() => import("./pages/BenefitPage"));
+const Sitemap = lazy(() => import("./pages/Sitemap"));
+const SubmitBook = lazy(() => import("./pages/SubmitBook"));
+const Login = lazy(() => import("./pages/Login"));
+const Profile = lazy(() => import("./pages/Profile"));
+const BulkUpload = lazy(() => import("./pages/BulkUpload"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,19 +71,21 @@ const App = () => (
             </a>
             <UserProfile />
             <main id="main-content" className="flex-grow" role="main">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Index />} />
-                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="/category/:category" element={<CategoryPage />} />
-                <Route path="/benefit/:benefit" element={<BenefitPage />} />
-                <Route path="/book/:id" element={<BookDetail />} />
-                <Route path="/sitemap.xml" element={<Sitemap />} />
-                <Route path="/submit-book" element={<SubmitBook />} />
-                {/* <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} /> */}
-                {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
-                <Route path="/bulk-upload" element={<ProtectedRoute><BulkUpload /></ProtectedRoute>} />
-              </Routes>
+              <Suspense fallback={<div>Loading page...</div>}>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={<Index />} />
+                  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                  <Route path="/category/:category" element={<CategoryPage />} />
+                  <Route path="/benefit/:benefit" element={<BenefitPage />} />
+                  <Route path="/book/:id" element={<BookDetail />} />
+                  <Route path="/sitemap.xml" element={<Sitemap />} />
+                  <Route path="/submit-book" element={<SubmitBook />} />
+                  {/* <Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} /> */}
+                  {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
+                  <Route path="/bulk-upload" element={<ProtectedRoute><BulkUpload /></ProtectedRoute>} />
+                </Routes>
+              </Suspense>
             </main>
             <Footer />
           </BrowserRouter>

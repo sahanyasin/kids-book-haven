@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Book } from "@/types/books";
 import { useQueryClient } from "@tanstack/react-query";
+import { optimizeAndUploadImage } from "@/utils/imageOptimizer";
 
 interface BookImageUploadProps {
   book: Book;
@@ -18,20 +19,8 @@ export const BookImageUpload = ({ book, isAdmin }: BookImageUploadProps) => {
     if (!file || !isAdmin) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      
-      const { error: uploadError, data } = await supabase.storage
-        .from('book-images')
-        .upload(fileName, file);
-
-      if (uploadError) throw uploadError;
-
-      if (!data) throw new Error('No data returned from upload');
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('book-images')
-        .getPublicUrl(data.path);
+      // Optimize and upload image
+      const { webpUrl, fallbackUrl } = await optimizeAndUploadImage(file);
 
       // Get the current max order_index for this book
       const { data: existingImages, error: fetchError } = await supabase
@@ -52,7 +41,8 @@ export const BookImageUpload = ({ book, isAdmin }: BookImageUploadProps) => {
         .from('book_images')
         .insert({
           book_id: book.id,
-          url: publicUrl,
+          url: webpUrl,
+          fallback_url: fallbackUrl,
           order_index: newOrderIndex,
         });
 

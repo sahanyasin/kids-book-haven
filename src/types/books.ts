@@ -4,7 +4,7 @@ export type Book = {
   description: string;
   price: number;
   categories: { id: string; name: string }[];
-  benefits: { id: string; name: string }[];
+  benefits: { id: string; name: string | null }[];
   sponsored: boolean | null;
   images: string[];
   created_at: string | null;

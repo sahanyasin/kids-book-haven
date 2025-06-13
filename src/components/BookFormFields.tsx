@@ -90,7 +90,7 @@ export function BookFormFields({ form }: BookFormFieldsProps) {
           <FormItem>
             <FormLabel>Benefits</FormLabel>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {benefits.map((benefit) => (
+              {benefits.filter(Boolean).map((benefit) => (
                 <FormField
                   key={benefit.id}
                   control={form.control}
