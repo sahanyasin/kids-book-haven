@@ -181,7 +181,7 @@ const Index = () => {
     );
   }
 
-  const displayBooks = searchQuery ? books : nonSponsoredBooks.slice(0, 4);
+  const displayBooks = searchQuery ? books : nonSponsoredBooks;
   const displayTitle = searchQuery ? "Search Results" : "Popular Books";
 
   return (

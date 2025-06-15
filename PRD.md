@@ -158,6 +158,7 @@ Kids Book Haven, çocuklar için kitap önerileri sunan ve kitap incelemelerini 
   - [ ] Benefits tablosunun otomatik oluşturulması için getBenefitId fonksiyonunun güncellenmesi
   - [ ] Var olmayan benefit'lerin otomatik oluşturulması
   - [ ] Hata yönetiminin iyileştirilmesi
+- [x] Ana Sayfa Kitap Sayfalama Hatası Düzeltme ✅
 
 ### 8.2 Orta Vadeli İyileştirmeler 📅
 1. **Kod Organizasyonu**
@@ -459,9 +460,9 @@ Kids Book Haven, çocuklar için kitap önerileri sunan ve kitap incelemelerini 
            - [x] Font yükleme stratejisi
            - [x] Reklam yerleşimi optimizasyonu
      - [x] Performans İzleme ✅
-       - [x] Google Analytics entegrasyonu
-       - [x] Search Console entegrasyonu
-       - [x] Düzenli SEO raporlama sistemi
+       - [ ] Google Analytics entegrasyonu 🚨
+       - [ ] Search Console entegrasyonu 🚨
+     - [x] Düzenli SEO raporlama sistemi
      - [x] Web Manifest İkon Hatası Düzeltmesi ✅
        - [x] `site.webmanifest` dosyasından ikon referanslarının kaldırılması ✅
 
@@ -494,7 +495,7 @@ Bu PRD, projenin mevcut durumunu ve gelecek planlarını detaylı bir şekilde a
 - [x] Google Analytics entegrasyonu
 - [x] Google Lighthouse Denetimleri ✅
   - [x] İlk Denetim ve Temel İyileştirmeler
-  - [ ] Performans Sorunlarını Giderme 🚨
+  - [x] Performans Sorunlarını Giderme ✅
 
 ## 10. İşaretler ve Açıklamalar
 - ✅ Tamamlandı
@@ -508,4 +509,4 @@ Bu PRD, projenin mevcut durumunu ve gelecek planlarını detaylı bir şekilde a
 - [x] Google Analytics entegrasyonu
 - [x] Google Lighthouse Denetimleri ✅
   - [x] İlk Denetim ve Temel İyileştirmeler
-  - [ ] Performans Sorunlarını Giderme 🚨 
+  - [x] Performans Sorunlarını Giderme ✅ 
