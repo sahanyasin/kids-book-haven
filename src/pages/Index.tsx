@@ -190,7 +190,7 @@ const Index = () => {
         <div className="min-h-screen flex w-full">
           <BookSidebar />
           <div className="flex-1 container py-8">
-            <h1 className="text-4xl font-bold mb-8 text-center">Children's Book Directory</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center">Bİr Kitap Bir Minik Okur...</h1>
                     
             <div className="mb-12 max-w-xl mx-auto">
               <SearchInput
