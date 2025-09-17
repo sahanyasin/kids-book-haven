@@ -199,7 +199,7 @@ const Index = () => {
                   setSearchQuery(e);
                   setCurrentPage(0);
                 }}
-                placeholder="Search by title..."
+                placeholder="Search by titlessssss..."
               />
             </div>
 
